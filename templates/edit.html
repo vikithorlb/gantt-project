@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Editar Tarefa</title>
+</head>
+<body>
+    <h1>Editar Tarefa</h1>
+    <form method="POST">
+        <label for="task">Tarefa:</label>
+        <input type="text" id="task" name="task" required value="{{ task['Task'] }}"><br><br>
+        
+        <label for="start_date">Data de Início:</label>
+        <input type="date" id="start_date" name="start_date" required value="{{ task['Start Date'] }}"><br><br>
+        
+        <label for="duration">Duração (dias):</label>
+        <input type="number" id="duration" name="duration" required value="{{ task['Duration'] }}"><br><br>
+
+        <input type="hidden" name="task_id" value="{{ task['ID'] }}">
+        <button type="submit">Salvar</button>
+    </form>
+    <a href="{{ url_for('index') }}">Voltar</a>
+</body>
+</html>
+
