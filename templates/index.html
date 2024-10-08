@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Gerenciamento de Tarefas</title>
+</head>
+<body>
+    <h1>Adicionar ou Editar Tarefa</h1>
+    <form method="post" action="/">
+        <input type="hidden" id="task_id" name="task_id" value="{{ task.ID if task else '' }}">
+        
+        <label for="task">Nome da Tarefa:</label>
+        <input type="text" id="task" name="task" required value="{{ task.Task if task else '' }}"><br><br>
+
+        <label for="start_date">Data de Início:</label>
+        <input type="date" id="start_date" name="start_date" required value="{{ task['Start Date']|date('Y-m-d') if task else '' }}"><br><br>
+
+        <label for="duration">Duração (dias):</label>
+        <input type="number" id="duration" name="duration" required value="{{ task.Duration if task else '' }}"><br><br>
+
+        <button type="submit">{{ 'Atualizar' if task else 'Adicionar' }}</button>
+    </form>
+
+    <h2>Tarefas Atuais</h2>
+    <ul>
+        {% for task in tasks %}
+            <li>
+                {{ task['Task'] }} - {{ task['Duration'] }} dias
+                <a href="{{ url_for('edit', task_id=task['ID']) }}">Editar</a>
+                <a href="{{ url_for('delete', task_id=task['ID']) }}">Excluir</a>
+            </li>
+        {% endfor %}
+    </ul>
+
+    <a href="/gantt">Ver Diagrama de Gantt</a>
+</body>
+</html>
+
