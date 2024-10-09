@@ -81,6 +81,6 @@ def gantt_chart():
     
     return render_template('gantt.html', gantt_html=gantt_html)
 
-#if __name__ == '__main__':
+if __name__ == '__main__':
     app.run(debug=True)
 
