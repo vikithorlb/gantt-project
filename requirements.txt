@@ -1,5 +1,5 @@
 blinker==1.5
-Brlapi==0.8.4
+
 certifi==2022.9.24
 chardet==5.1.0
 charset-normalizer==3.0.1
