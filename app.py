@@ -1,9 +1,26 @@
 from flask import Flask, render_template, request, redirect, url_for
 import plotly.express as px
 import pandas as pd
+import json
 
 app = Flask(__name__)
 tasks = []  # Lista para armazenar as tarefas temporariamente
+
+# Função para carregar tarefas do arquivo JSON
+def load_tasks():
+    try:
+        with open('tasks.json', 'r') as f:
+            return json.load(f)
+    except (FileNotFoundError, json.JSONDecodeError):
+        return []
+
+# Função para salvar tarefas no arquivo JSON
+def save_tasks():
+    with open('tasks.json', 'w') as f:
+        json.dump(tasks, f, default=str)  # default=str para converter datas em string
+
+# Carregar as tarefas no início
+tasks = load_tasks()
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
@@ -29,13 +46,14 @@ def index():
                 'Duration': duration
             })
 
+        save_tasks()  # Salva as alterações no JSON
         return redirect(url_for('index'))
     
     # Formatar a data como string antes de passar para o template
     formatted_tasks = []
     for task in tasks:
         formatted_task = task.copy()
-        formatted_task['Start Date'] = task['Start Date'].strftime('%Y-%m-%d')  # Formatar a data como string
+        formatted_task['Start Date'] = pd.to_datetime(task['Start Date']).strftime('%Y-%m-%d')
         formatted_tasks.append(formatted_task)
 
     return render_template('index.html', tasks=formatted_tasks)
@@ -50,14 +68,14 @@ def edit(task_id):
         
         if task:
             task['Task'] = task_name
-            task['Start Date'] = start_date  # Mantém como datetime
+            task['Start Date'] = start_date
             task['Duration'] = duration
         
+        save_tasks()  # Salva as alterações no JSON
         return redirect(url_for('index'))
 
-    # Formatar a data como string para exibição no formulário
     if task:
-        task['Start Date'] = task['Start Date'].strftime('%Y-%m-%d')  # Formatar a data como string para o template
+        task['Start Date'] = pd.to_datetime(task['Start Date']).strftime('%Y-%m-%d')
 
     return render_template('edit.html', task=task)
 
@@ -65,12 +83,14 @@ def edit(task_id):
 def delete(task_id):
     global tasks
     tasks = [task for task in tasks if task['ID'] != task_id]
+    save_tasks()  # Salva as alterações no JSON
     return redirect(url_for('index'))
 
 @app.route('/gantt')
 def gantt_chart():
     df = pd.DataFrame(tasks)
     if not df.empty:
+        df['Start Date'] = pd.to_datetime(df['Start Date'])
         df['Finish Date'] = df['Start Date'] + pd.to_timedelta(df['Duration'], unit='D')
 
         fig = px.timeline(df, x_start='Start Date', x_end='Finish Date', y='Task', title='Diagrama de Gantt')
