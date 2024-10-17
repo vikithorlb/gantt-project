@@ -27,14 +27,14 @@ def index():
     if request.method == 'POST':
         task_id = request.form.get('task_id')
         task_name = request.form.get('task')
-        start_date = pd.to_datetime(request.form.get('start_date'))
+        start_date = pd.to_datetime(request.form.get('start_date'), errors='coerce')
         duration = int(request.form.get('duration'))
 
         if task_id:
             for task in tasks:
                 if task['ID'] == int(task_id):
                     task['Task'] = task_name
-                    task['Start Date'] = start_date  # Mantém como datetime
+                    task['Start Date'] = start_date
                     task['Duration'] = duration
                     break
         else:
@@ -42,18 +42,22 @@ def index():
             tasks.append({
                 'ID': task_id,
                 'Task': task_name,
-                'Start Date': start_date,  # Mantém como datetime
+                'Start Date': start_date,
                 'Duration': duration
             })
 
-        save_tasks()  # Salva as alterações no JSON
+        save_tasks()
         return redirect(url_for('index'))
     
     # Formatar a data como string antes de passar para o template
     formatted_tasks = []
     for task in tasks:
         formatted_task = task.copy()
-        formatted_task['Start Date'] = pd.to_datetime(task['Start Date']).strftime('%Y-%m-%d')
+        start_date = pd.to_datetime(task['Start Date'], errors='coerce')
+        if pd.notna(start_date):
+            formatted_task['Start Date'] = start_date.strftime('%Y-%m-%d')
+        else:
+            formatted_task['Start Date'] = ''  # Define como string vazia para datas inválidas
         formatted_tasks.append(formatted_task)
 
     return render_template('index.html', tasks=formatted_tasks)
@@ -63,7 +67,7 @@ def edit(task_id):
     task = next((task for task in tasks if task['ID'] == task_id), None)
     if request.method == 'POST':
         task_name = request.form.get('task')
-        start_date = pd.to_datetime(request.form.get('start_date'))
+        start_date = pd.to_datetime(request.form.get('start_date'), errors='coerce')
         duration = int(request.form.get('duration'))
         
         if task:
@@ -71,11 +75,15 @@ def edit(task_id):
             task['Start Date'] = start_date
             task['Duration'] = duration
         
-        save_tasks()  # Salva as alterações no JSON
+        save_tasks()
         return redirect(url_for('index'))
 
     if task:
-        task['Start Date'] = pd.to_datetime(task['Start Date']).strftime('%Y-%m-%d')
+        start_date = pd.to_datetime(task['Start Date'], errors='coerce')
+        if pd.notna(start_date):
+            task['Start Date'] = start_date.strftime('%Y-%m-%d')
+        else:
+            task['Start Date'] = ''  # Define como string vazia para datas inválidas
 
     return render_template('edit.html', task=task)
 
@@ -83,14 +91,15 @@ def edit(task_id):
 def delete(task_id):
     global tasks
     tasks = [task for task in tasks if task['ID'] != task_id]
-    save_tasks()  # Salva as alterações no JSON
+    save_tasks()
     return redirect(url_for('index'))
 
 @app.route('/gantt')
 def gantt_chart():
     df = pd.DataFrame(tasks)
     if not df.empty:
-        df['Start Date'] = pd.to_datetime(df['Start Date'])
+        df['Start Date'] = pd.to_datetime(df['Start Date'], errors='coerce')
+        df = df.dropna(subset=['Start Date'])  # Remove tarefas com datas inválidas antes de criar o gráfico
         df['Finish Date'] = df['Start Date'] + pd.to_timedelta(df['Duration'], unit='D')
 
         fig = px.timeline(df, x_start='Start Date', x_end='Finish Date', y='Task', title='Diagrama de Gantt')
