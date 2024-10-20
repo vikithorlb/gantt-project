@@ -1,0 +1,119 @@
+/* Estilo geral do corpo da página */
+body {
+    background-color: #ecf0f1; /* Cinza muito claro */
+    font-family: 'Arial', sans-serif;
+    color: #34495e; /* Azul escuro */
+    margin: 0;
+    padding: 0;
+}
+
+/* Estilização para o título */
+h1 {
+    font-size: 2.5em;
+    color: #e74c3c; /* Vermelho vibrante */
+    text-align: center;
+    margin-top: 20px;
+    margin-bottom: 20px;
+    text-shadow: 2px 2px #bdc3c7; /* Sombra suave no texto */
+}
+
+/* Estilização para os parágrafos */
+p {
+    font-size: 1.2em;
+    color: #7f8c8d; /* Cinza médio */
+    line-height: 1.5;
+    text-align: center;
+    margin: 20px auto;
+    max-width: 600px;
+}
+
+/* Estilização para links */
+a {
+    color: #3498db; /* Azul suave */
+    text-decoration: none;
+    border-bottom: 2px solid #3498db;
+    transition: color 0.3s ease, border-bottom 0.3s ease;
+}
+
+a:hover {
+    color: #e74c3c; /* Vermelho ao passar o mouse */
+    border-bottom: 2px solid #e74c3c;
+}
+
+/* Estilo para botões */
+button {
+    background-color: #2ecc71; /* Verde vibrante */
+    color: white;
+    font-size: 1em;
+    padding: 12px 25px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s;
+    margin: 10px 0;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+button:hover {
+    background-color: #27ae60; /* Verde mais escuro */
+    transform: scale(1.05); /* Efeito de ampliação ao passar o mouse */
+}
+
+/* Formatação dos inputs de formulário */
+input[type="text"], input[type="date"], input[type="number"] {
+    width: 100%;
+    padding: 12px;
+    margin: 10px 0;
+    border: 2px solid #3498db;
+    border-radius: 5px;
+    box-sizing: border-box;
+    font-size: 1em;
+    transition: border-color 0.3s ease;
+}
+
+input[type="text"]:focus, input[type="date"]:focus, input[type="number"]:focus {
+    border-color: #e74c3c; /* Vermelho ao focar no input */
+}
+
+/* Estilo do formulário */
+form {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+/* Tabela para tarefas */
+table {
+    width: 100%;
+    margin: 20px 0;
+    border-collapse: collapse;
+}
+
+table th, table td {
+    padding: 15px;
+    text-align: left;
+    border-bottom: 2px solid #3498db;
+}
+
+table th {
+    background-color: #3498db; /* Azul suave */
+    color: white;
+}
+
+table tr:hover {
+    background-color: #ecf0f1; /* Cinza claro ao passar o mouse */
+}
+
+footer {
+    text-align: center;
+    padding: 20px;
+    background-color: #34495e; /* Azul escuro */
+    color: white;
+    margin-top: 20px;
+    font-size: 0.9em;
+    box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.2);
+}
+
