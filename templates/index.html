@@ -5,6 +5,8 @@
     <title>Gerenciamento de Tarefas</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}?v=2">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Download Task JSON</title>
 
 </head>
 <body>
@@ -37,6 +39,11 @@
 
     <a href="/gantt">Ver Diagrama de Gantt</a>
     <script src="script.js"></script>
+    <h1>Download Task JSON</h1>
+    <!-- Botão de download -->
+    <a href="/download-task" download="task.json">
+        <button>Baixar Task JSON</button>
+    </a>
 
 </body>
 </html>
