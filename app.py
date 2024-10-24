@@ -103,7 +103,8 @@ def gantt_chart():
         df['Finish Date'] = df['Start Date'] + pd.to_timedelta(df['Duration'], unit='D')
 
         fig = px.timeline(df, x_start='Start Date', x_end='Finish Date', y='Task', title='Diagrama de Gantt')
-        fig.update_layout(xaxis_title='Data', yaxis_title='Tarefa')
+        fig.update_layout(xaxis_title='Data', yaxis_title='Tarefa',
+        height=300 + (len(df) * 20) )
         gantt_html = fig.to_html(full_html=False)
     else:
         gantt_html = "<p>Nenhuma tarefa adicionada ainda.</p>"
