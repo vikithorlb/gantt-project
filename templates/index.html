@@ -6,7 +6,7 @@
     <title>Gerenciamento de Tarefas</title>
 </head>
 <body>
-    <h1>Adicionar ou Editar Tarefa</h1>
+    <h1>Adicionar Tarefa</h1>
     <form method="post" action="/">
         <input type="hidden" id="task_id" name="task_id" value="{{ task.ID if task else '' }}">
         
@@ -33,10 +33,10 @@
         {% endfor %}
     </ul>
 
-    <a href="/gantt">Ver Diagrama de Gantt</a>
+    <a href="/gantt">Ver Cronograma</a>
 
     <!-- Botão de download para o arquivo tasks.json -->
-    <h1>Download Task JSON</h1>
+    <h1>Opções do desenvolvedor</h1>
     <a href="/download-task">
         <button type="button">Baixar Task JSON</button>
     </a>
