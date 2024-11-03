@@ -17,7 +17,7 @@ def load_tasks():
 # Função para salvar tarefas no arquivo JSON
 def save_tasks():
     with open('tasks.json', 'w') as f:
-        json.dump(tasks, f, default=str)  # default=str para converter datas em string
+        json.dump(tasks, f, default=str)
 
 # Carregar as tarefas no início
 tasks = load_tasks()
@@ -49,7 +49,6 @@ def index():
         save_tasks()
         return redirect(url_for('index'))
     
-    # Formatar a data como string antes de passar para o template
     formatted_tasks = []
     for task in tasks:
         formatted_task = task.copy()
@@ -57,7 +56,7 @@ def index():
         if pd.notna(start_date):
             formatted_task['Start Date'] = start_date.strftime('%Y-%m-%d')
         else:
-            formatted_task['Start Date'] = ''  # Define como string vazia para datas inválidas
+            formatted_task['Start Date'] = ''
         formatted_tasks.append(formatted_task)
 
     return render_template('index.html', tasks=formatted_tasks)
@@ -83,7 +82,7 @@ def edit(task_id):
         if pd.notna(start_date):
             task['Start Date'] = start_date.strftime('%Y-%m-%d')
         else:
-            task['Start Date'] = ''  # Define como string vazia para datas inválidas
+            task['Start Date'] = ''
 
     return render_template('edit.html', task=task)
 
@@ -99,12 +98,24 @@ def gantt_chart():
     df = pd.DataFrame(tasks)
     if not df.empty:
         df['Start Date'] = pd.to_datetime(df['Start Date'], errors='coerce')
-        df = df.dropna(subset=['Start Date'])  # Remove tarefas com datas inválidas antes de criar o gráfico
+        df = df.dropna(subset=['Start Date'])
+        
+        # Ordena pelo início das tarefas
+        df = df.sort_values(by=['Start Date', 'Duration'])
+        
+        # Calcula a data de término com base no início e duração
         df['Finish Date'] = df['Start Date'] + pd.to_timedelta(df['Duration'], unit='D')
 
+        # Ordena as tarefas de cima para baixo pela data de início
+        ordered_tasks = df['Task'][::-1].tolist()  # Reverter a ordem para cima para baixo
+
+        # Cria o gráfico de Gantt com Plotly
         fig = px.timeline(df, x_start='Start Date', x_end='Finish Date', y='Task', title='Diagrama de Gantt')
-        fig.update_layout(xaxis_title='Data', yaxis_title='Tarefa',
-        height=300 + (len(df) * 20) )
+        
+        # Configuração para exibir as tarefas de cima para baixo em ordem cronológica
+        fig.update_yaxes(categoryorder='array', categoryarray=ordered_tasks)
+        fig.update_layout(xaxis_title='Data', yaxis_title='Tarefa', height=300 + (len(df) * 20))
+        
         gantt_html = fig.to_html(full_html=False)
     else:
         gantt_html = "<p>Nenhuma tarefa adicionada ainda.</p>"
